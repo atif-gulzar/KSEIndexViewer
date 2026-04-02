@@ -1,0 +1,278 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: transparent;
+  overflow: hidden;
+  user-select: none;
+}
+
+#app {
+  width: 100%;
+  height: 100vh;
+}
+
+.widget {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.titlebar {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(30, 41, 59, 0.9);
+  gap: 8px;
+}
+
+.title {
+  color: #e2e8f0;
+  font-size: 13px;
+  font-weight: 600;
+  flex: 1;
+  letter-spacing: 0.3px;
+  pointer-events: none;
+}
+
+.titlebar-buttons {
+  display: flex;
+  gap: 4px;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: all 0.15s;
+}
+
+.btn-icon:hover {
+  background: rgba(148, 163, 184, 0.15);
+  color: #e2e8f0;
+}
+
+.btn-close:hover {
+  background: rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+
+.spinning {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.index-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+
+.index-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.index-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.index-list::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 2px;
+}
+
+.index-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  cursor: default;
+  transition: background 0.15s;
+}
+
+.index-row:hover {
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.index-name {
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pin-icon {
+  font-size: 10px;
+}
+
+.index-change {
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.positive .index-change {
+  color: #4ade80;
+}
+
+.negative .index-change {
+  color: #f87171;
+}
+
+.empty-state {
+  color: #64748b;
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.statusbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background: rgba(30, 41, 59, 0.6);
+  border-top: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.statusbar span {
+  color: #64748b;
+  font-size: 10px;
+}
+
+.statusbar .error {
+  color: #f87171;
+}
+
+.settings-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+.settings-section {
+  margin-bottom: 16px;
+}
+
+.section-label {
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.section-hint {
+  color: #475569;
+  font-size: 10px;
+  margin-bottom: 8px;
+}
+
+.index-checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.checkbox-row:hover {
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.checkbox-row.pinned {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.checkbox-row input[type="checkbox"] {
+  accent-color: #3b82f6;
+  cursor: pointer;
+}
+
+.checkbox-name {
+  color: #cbd5e1;
+  font-size: 12px;
+  flex: 1;
+}
+
+.pin-badge {
+  font-size: 9px;
+  font-weight: 700;
+  color: #60a5fa;
+  background: rgba(59, 130, 246, 0.15);
+  padding: 1px 5px;
+  border-radius: 3px;
+  letter-spacing: 0.5px;
+}
+
+.settings-select {
+  width: 100%;
+  padding: 8px 10px;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 6px;
+  color: #e2e8f0;
+  font-size: 12px;
+  cursor: pointer;
+  outline: none;
+}
+
+.settings-select:focus {
+  border-color: #3b82f6;
+}
+
+.settings-select option {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
+.btn-save {
+  width: 100%;
+  padding: 10px;
+  background: #3b82f6;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-top: 8px;
+}
+
+.btn-save:hover {
+  background: #2563eb;
+}
+
+.btn-save:active {
+  background: #1d4ed8;
+}
