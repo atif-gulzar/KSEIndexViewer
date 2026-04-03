@@ -10,16 +10,51 @@ use tauri::{AppHandle, Emitter, Manager};
 const FONT_DATA: &[u8] = include_bytes!("../fonts/Arial_Bold.ttf");
 const DEFAULT_ICON: &[u8] = include_bytes!("../icons/icon.png");
 
-fn create_icon_image(text: &str, is_positive: bool) -> Vec<u8> {
+// Material Design green bands (50 → 900)
+const GREEN_BANDS: [[u8; 3]; 10] = [
+    [232, 245, 233], // 0-1%
+    [200, 230, 201], // 1-2%
+    [165, 214, 167], // 2-3%
+    [129, 199, 132], // 3-4%
+    [102, 187, 106], // 4-5%
+    [76,  175,  80], // 5-6%
+    [67,  160,  71], // 6-7%
+    [56,  142,  60], // 7-8%
+    [46,  125,  50], // 8-9%
+    [27,   94,  32], // 9%+
+];
+
+// Material Design red bands (50 → 900)
+const RED_BANDS: [[u8; 3]; 10] = [
+    [255, 235, 238], // 0-1%
+    [255, 205, 210], // 1-2%
+    [239, 154, 154], // 2-3%
+    [229, 115, 115], // 3-4%
+    [239,  83,  80], // 4-5%
+    [244,  67,  54], // 5-6%
+    [229,  57,  53], // 6-7%
+    [211,  47,  47], // 7-8%
+    [198,  40,  40], // 8-9%
+    [183,  28,  28], // 9%+
+];
+
+fn create_icon_image(percent_change: f64) -> Vec<u8> {
     let size = 128u32;
-    let bg = if is_positive {
-        Rgba([134u8, 239, 172, 255]) // light green
+    let is_positive = percent_change >= 0.0;
+    let band = (percent_change.abs().floor() as usize).min(9);
+
+    let rgb = if is_positive { GREEN_BANDS[band] } else { RED_BANDS[band] };
+    let bg = Rgba([rgb[0], rgb[1], rgb[2], 255]);
+
+    // Black text on bands 0-6, white on bands 7-9
+    let text_color = if band >= 7 {
+        Rgba([255u8, 255, 255, 255])
     } else {
-        Rgba([252u8, 165, 165, 255]) // light red
+        Rgba([0u8, 0, 0, 255])
     };
-    let text_color = Rgba([0u8, 0, 0, 255]); // black
 
     let mut img = RgbaImage::from_pixel(size, size, bg);
+    let text = format!("{:.1}", percent_change.abs());
 
     if let Ok(font) = FontRef::try_from_slice(FONT_DATA) {
         let scale = if text.len() > 4 {
@@ -34,8 +69,8 @@ fn create_icon_image(text: &str, is_positive: bool) -> Vec<u8> {
         let y = ((size as f32 - scale.y) / 2.0) as i32;
 
         // Draw twice with 1px offset for extra boldness
-        draw_text_mut(&mut img, text_color, x, y, scale, &font, text);
-        draw_text_mut(&mut img, text_color, x + 1, y, scale, &font, text);
+        draw_text_mut(&mut img, text_color, x, y, scale, &font, &text);
+        draw_text_mut(&mut img, text_color, x + 1, y, scale, &font, &text);
     }
 
     img.into_raw()
@@ -114,18 +149,16 @@ pub fn update_tray_icon(app: &AppHandle, data: &[IndexData], pinned_name: &str) 
 
     if let Some(tray) = app.tray_by_id("main") {
         if let Some(index) = pinned {
-            let text = format!("{:.1}", index.percent_change.abs());
-            let is_positive = index.percent_change >= 0.0;
-            let icon_data = create_icon_image(&text, is_positive);
+            let icon_data = create_icon_image(index.percent_change);
             let icon = TauriImage::new_owned(icon_data, 128, 128);
             let _ = tray.set_icon(Some(icon));
 
-            let sign = if is_positive { "+" } else { "-" };
+            let sign = if index.percent_change >= 0.0 { "+" } else { "" };
             let tooltip = format!(
                 "{}: {}{}% | Current: {:.2}",
                 index.name,
                 sign,
-                text,
+                format!("{:.1}", index.percent_change),
                 index.current
             );
             let _ = tray.set_tooltip(Some(&tooltip));
