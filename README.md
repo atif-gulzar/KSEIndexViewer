@@ -17,7 +17,7 @@ A lightweight desktop widget for tracking Pakistan Stock Exchange (PSX) indices 
 
 | Widget | System Tray |
 |--------|-------------|
-| ![Widget](screenshots/widget.jpeg) | ![System Tray](screenshots/systemtray.png) |
+| ![Widget](screenshots/widget.png) | ![System Tray](screenshots/systemtray.png) |
 
 ## Installation
 
