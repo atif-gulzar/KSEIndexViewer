@@ -21,9 +21,9 @@ The widget displays PSX indices with color-coded percentage changes. Right-click
 
 ### Download
 
-Download the latest installer from [Releases](https://github.com/atif-gulzar/KSEIndexViewer/releases).
+Download the latest installer from [**Releases**](https://github.com/atif-gulzar/KSEIndexViewer/releases/latest).
 
-Run **KSE Index Viewer_1.0.0_x64-setup.exe** — installs per-user, no admin required.
+Run the setup exe — installs per-user, no admin required.
 
 ### Build from source
 
