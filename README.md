@@ -13,9 +13,11 @@ A lightweight desktop widget for tracking Pakistan Stock Exchange (PSX) indices 
 - **Auto-start** — Optionally launch on Windows login
 - **Lightweight** — ~4MB installer, minimal resource usage
 
-## Screenshot
+## Screenshots
 
-The widget displays PSX indices with color-coded percentage changes. Right-click any index to pin it to the tray icon.
+| Widget | System Tray |
+|--------|-------------|
+| ![Widget](screenshots/widget.jpeg) | ![System Tray](screenshots/systemtray.png) |
 
 ## Installation
 
