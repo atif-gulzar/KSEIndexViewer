@@ -145,6 +145,25 @@ body {
   line-height: 1.6;
 }
 
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  padding: 4px 12px;
+}
+
+.footer-links a {
+  color: #64748b;
+  font-size: 10px;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.footer-links a:hover {
+  color: #94a3b8;
+  text-decoration: underline;
+}
+
 .statusbar {
   display: flex;
   justify-content: space-between;

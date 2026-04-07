@@ -1,6 +1,7 @@
 const { invoke } = window.__TAURI__.core;
 const { listen } = window.__TAURI__.event;
 const { getCurrentWindow } = window.__TAURI__.window;
+const { open } = window.__TAURI__.shell;
 
 let allIndices = [];
 let settings = {
@@ -51,6 +52,10 @@ function renderWidget() {
           `;
         }).join('')}
       </div>
+      <div class="footer-links">
+        <a href="#" id="link-source" title="Open PSX Indices page">Source</a>
+        <a href="#" id="link-share" title="Share this app">Share</a>
+      </div>
       <div class="statusbar" id="statusbar">
         <span id="last-updated">${lastRefreshTime ? `Updated ${formatTime(lastRefreshTime)}` : 'Loading...'}</span>
         <span id="countdown"></span>
@@ -79,6 +84,16 @@ function renderWidget() {
 
   document.getElementById('btn-close')?.addEventListener('click', () => {
     getCurrentWindow().hide();
+  });
+
+  document.getElementById('link-source')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    open('https://dps.psx.com.pk/indices');
+  });
+
+  document.getElementById('link-share')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    open('https://github.com/atif-gulzar/KSEIndexViewer/releases/latest');
   });
 
   // Right-click to pin to tray
