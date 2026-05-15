@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/nicegui/tauri/dev/tooling/cli/schema.json",
   "productName": "KSE Index Viewer",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "identifier": "com.kse.indexviewer",
   "build": {
     "frontendDist": "../src"

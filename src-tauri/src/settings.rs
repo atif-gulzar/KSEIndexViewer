@@ -2,6 +2,10 @@ use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::PathBuf;
 
+fn default_tab_value() -> String {
+    "indices".to_string()
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AppSettings {
     pub enabled_indices: Vec<String>,
@@ -9,6 +13,10 @@ pub struct AppSettings {
     pub refresh_interval_seconds: u64,
     pub always_on_top: bool,
     pub launch_at_startup: bool,
+    #[serde(default)]
+    pub apps_script_url: Option<String>,
+    #[serde(default = "default_tab_value")]
+    pub default_tab: String,
 }
 
 impl Default for AppSettings {
@@ -24,6 +32,8 @@ impl Default for AppSettings {
             refresh_interval_seconds: 300,
             always_on_top: true,
             launch_at_startup: false,
+            apps_script_url: None,
+            default_tab: default_tab_value(),
         }
     }
 }
