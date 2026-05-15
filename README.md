@@ -2,7 +2,7 @@
 
 A lightweight desktop widget for tracking Pakistan Stock Exchange (PSX) indices in real-time. Built with [Tauri 2](https://tauri.app/) and Rust.
 
-![Widget Preview](https://img.shields.io/badge/platform-Windows-blue) ![Version](https://img.shields.io/badge/version-1.1.0-green)
+![Widget Preview](https://img.shields.io/badge/platform-Windows-blue) ![Version](https://img.shields.io/badge/version-1.1.1-green)
 
 ## Features
 

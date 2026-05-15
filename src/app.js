@@ -208,7 +208,7 @@ function portfolioBodyHtml() {
         return `
           <div class="holding-card ${isClosed ? 'closed' : ''}">
             <div class="holding-row1">
-              <span class="holding-symbol">${r.symbol}</span>
+              <a href="#" class="holding-symbol" data-symbol="${r.symbol}" title="Open PSX page for ${r.symbol}">${r.symbol}</a>
               <span class="holding-today ${todayCls}">
                 ${formatSignedMoney(r.today_change_rs)} (${formatSigned(r.today_change_pct, 2)}%)
               </span>
@@ -329,6 +329,14 @@ function bindPortfolioBody() {
   document.getElementById('sort-dir')?.addEventListener('click', () => {
     portfolioSortDesc = !portfolioSortDesc;
     renderWidget();
+  });
+
+  document.querySelectorAll('.holding-symbol').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      const symbol = el.dataset.symbol;
+      if (symbol) open(`https://dps.psx.com.pk/company/${encodeURIComponent(symbol)}`);
+    });
   });
 
   document.getElementById('btn-cancel-txn')?.addEventListener('click', () => {
