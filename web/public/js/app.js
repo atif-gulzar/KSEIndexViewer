@@ -19,13 +19,40 @@ const routes = [
 const pageEl  = document.getElementById('page');
 const titleEl = document.getElementById('page-title');
 const refreshBtn = document.getElementById('btn-refresh');
+const primaryActionBtn = document.getElementById('btn-primary-action');
 
 let currentRoute = null;
 let currentRefreshHandler = null;
+let currentPrimaryHandler = null;
 
 /** Called by page modules to register a refresh handler for the header's ↻ button. */
 export function onRefresh(handler) {
   currentRefreshHandler = handler;
+}
+
+/**
+ * Register a contextual primary action button in the header (next to ↻ refresh).
+ * Pages that don't call this get no button. Cleared automatically before each navigate.
+ *
+ *   onPrimaryAction(handler, { label: '+', title: 'Add Transaction' })
+ */
+export function onPrimaryAction(handler, { label = '+', title = 'Action', ariaLabel } = {}) {
+  currentPrimaryHandler = handler;
+  if (!handler) {
+    primaryActionBtn.hidden = true;
+    primaryActionBtn.textContent = '';
+    return;
+  }
+  primaryActionBtn.textContent = label;
+  primaryActionBtn.title = title;
+  primaryActionBtn.setAttribute('aria-label', ariaLabel || title);
+  primaryActionBtn.hidden = false;
+}
+
+function clearPrimaryAction() {
+  currentPrimaryHandler = null;
+  primaryActionBtn.hidden = true;
+  primaryActionBtn.textContent = '';
 }
 
 function setActiveNav(nav) {
@@ -41,6 +68,7 @@ async function navigate() {
     if (m) {
       currentRoute = route;
       currentRefreshHandler = null;
+      clearPrimaryAction();
       titleEl.textContent = route.title;
       setActiveNav(route.nav);
       pageEl.innerHTML = '<div class="loading">Loading…</div>';
@@ -74,6 +102,10 @@ export function escapeHtml(s) {
 refreshBtn.addEventListener('click', () => {
   if (currentRefreshHandler) currentRefreshHandler();
   else navigate();
+});
+
+primaryActionBtn.addEventListener('click', () => {
+  if (currentPrimaryHandler) currentPrimaryHandler();
 });
 
 window.addEventListener('hashchange', navigate);

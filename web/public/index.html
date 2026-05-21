@@ -19,7 +19,10 @@
   <main id="app" class="app-shell">
     <header class="app-header">
       <h1 id="page-title">KSE Index Viewer</h1>
-      <button id="btn-refresh" class="header-btn" title="Refresh" aria-label="Refresh">↻</button>
+      <div class="header-actions">
+        <button id="btn-primary-action" class="header-btn primary" hidden></button>
+        <button id="btn-refresh" class="header-btn" title="Refresh" aria-label="Refresh">↻</button>
+      </div>
     </header>
 
     <section id="page" class="page" aria-live="polite">

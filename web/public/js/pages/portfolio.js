@@ -1,6 +1,6 @@
 import { fetchTransactions, postTransaction, fetchMarketWatch, computePositions, buildPortfolioRows } from '../api.js';
 import { getSettings, getCache, setCache } from '../store.js';
-import { escapeHtml, onRefresh } from '../app.js';
+import { escapeHtml, onRefresh, onPrimaryAction } from '../app.js';
 import { formatSigned, formatMoney, formatSignedMoney, todayIsoDate } from '../format.js';
 
 let summary = null;
@@ -38,6 +38,12 @@ export async function renderPortfolio(pageEl) {
     }
   };
   onRefresh(refresh);
+
+  // Header "+" button toggles the Add Transaction form
+  onPrimaryAction(() => {
+    showAddForm = !showAddForm;
+    paint(pageEl);
+  }, { label: '+', title: 'Add Transaction' });
 
   // Render cached immediately if we have it, then refresh in background
   const cached = getCache('portfolio-summary');
@@ -84,6 +90,8 @@ function view() {
   const realizedCls = summary.total_realized >= 0 ? 'positive' : 'negative';
 
   return `
+    ${showAddForm ? addFormView() : ''}
+
     <div class="portfolio-summary">
       <div class="summary-row main">
         <span class="summary-label">Total Unrealized</span>
@@ -113,15 +121,9 @@ function view() {
 
     <div class="holding-list">
       ${rows.length === 0
-        ? '<div class="empty-state">No transactions yet. Tap + Add Transaction below.</div>'
+        ? '<div class="empty-state">No transactions yet. Tap the <strong>+</strong> in the header to add one.</div>'
         : rows.map(holdingCard).join('')}
     </div>
-
-    ${showAddForm ? addFormView() : `
-      <div class="add-txn-trigger">
-        <button class="btn-primary" id="btn-show-txn">+ Add Transaction</button>
-      </div>
-    `}
   `;
 }
 
@@ -217,10 +219,6 @@ function bind(pageEl) {
   });
   pageEl.querySelector('#portfolio-dir')?.addEventListener('click', () => {
     sortDesc = !sortDesc;
-    paint(pageEl);
-  });
-  pageEl.querySelector('#btn-show-txn')?.addEventListener('click', () => {
-    showAddForm = true;
     paint(pageEl);
   });
   pageEl.querySelector('#btn-cancel-txn')?.addEventListener('click', () => {
