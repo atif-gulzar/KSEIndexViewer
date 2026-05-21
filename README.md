@@ -28,6 +28,10 @@ Download the latest installer from [**Releases**](https://github.com/atif-gulzar
 
 Run the setup exe — installs per-user, no admin required.
 
+### Prefer a web app?
+
+There's also a [**mobile-friendly PWA**](./web/README.md) with the same data + a searchable full PSX market + per-stock charts. Works on any OS (including iOS/Android — installable as an app). Same Apps Script URL works on both, so your portfolio stays in sync. See [`web/README.md`](./web/README.md) for setup.
+
 ### Build from source
 
 **Prerequisites:**

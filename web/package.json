@@ -1,0 +1,13 @@
+{
+  "name": "kse-index-viewer-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Web companion for KSE Index Viewer — PSX indices + portfolio tracker. Cloudflare Pages + Functions.",
+  "scripts": {
+    "dev": "wrangler pages dev public --compatibility-date=2024-10-01 --port=8788",
+    "deploy": "wrangler pages deploy public --project-name=kse-index-viewer"
+  },
+  "devDependencies": {
+    "wrangler": "^3.95.0"
+  }
+}

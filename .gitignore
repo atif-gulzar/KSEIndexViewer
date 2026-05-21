@@ -4,6 +4,10 @@ node_modules/
 # Build output
 src-tauri/target/
 
+# Web build artifacts
+web/.wrangler/
+web/node_modules/
+
 # Generated icons (keep source.png and icon.ico)
 src-tauri/icons/ios/
 src-tauri/icons/android/
