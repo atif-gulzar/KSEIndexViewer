@@ -261,7 +261,7 @@ a:hover { text-decoration: underline; }
 
 .sort-bar {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: 8px;
   padding: 8px 0;
   margin-bottom: 6px;
@@ -272,9 +272,15 @@ a:hover { text-decoration: underline; }
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }
-.sort-select {
-  flex: 1;
+/* Use `select.sort-select` for higher specificity than Pico's `input, select, textarea { width:100%; }` */
+select.sort-select {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
   background: var(--bg-elev);
   border: 1px solid var(--border);
   border-radius: 6px;
@@ -282,19 +288,30 @@ a:hover { text-decoration: underline; }
   padding: 6px 8px;
   font-size: 12px;
   outline: none;
+  margin: 0;
+  height: 32px;
+  line-height: 1;
 }
-.sort-select:focus { border-color: var(--accent); }
-.sort-dir {
-  width: 32px;
-  height: 30px;
+select.sort-select:focus { border-color: var(--accent); }
+button.sort-dir {
+  flex: 0 0 36px;
+  width: 36px;
+  height: 32px;
+  margin: 0;
+  padding: 0;
   background: var(--bg-elev);
   border: 1px solid var(--border);
   border-radius: 6px;
   color: var(--text-dim);
   cursor: pointer;
   transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-size: 11px;
 }
-.sort-dir:hover { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+button.sort-dir:hover { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
 
 /* ---------- Portfolio ---------- */
 
