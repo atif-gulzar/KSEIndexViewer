@@ -76,10 +76,10 @@ function view(s) {
           <summary>How to set up (one time)</summary>
           <ol>
             <li>Create a blank Google Sheet</li>
-            <li>Extensions → Apps Script</li>
-            <li>Click <em>Copy Apps Script code</em> above, paste into the editor (replace all), Save</li>
-            <li>Deploy → New deployment → Type: Web app · Execute as: <strong>Me</strong> · Who has access: <strong>Anyone</strong> → Deploy</li>
-            <li>Authorize the script · copy the Web App URL · paste it above</li>
+            <li>In the Sheet's <strong>top menu bar</strong>, click <strong>Extensions → Apps Script</strong> — opens the script editor in a new tab</li>
+            <li>Click <em>Copy Apps Script code</em> above, paste into the editor (replace all), Save (Ctrl/Cmd + S)</li>
+            <li>Top-right of the editor: click <strong>Deploy → New deployment</strong>. In the dialog, click the ⚙ next to <em>Select type</em> and pick <strong>Web app</strong>. Set <em>Execute as</em>: <strong>Me</strong>, <em>Who has access</em>: <strong>Anyone</strong>, then click <strong>Deploy</strong></li>
+            <li>Authorize the script when prompted · copy the <strong>Web app URL</strong> Google gives you · paste it above</li>
           </ol>
         </details>
       </section>

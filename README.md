@@ -94,14 +94,15 @@ The Apps Script you paste is a tiny 30-line script that exposes two endpoints on
 
 
 1. Create a new blank Google Sheet (any name)
-2. **Extensions → Apps Script**
-3. Replace the default code with the [Apps Script code below](#apps-script-code) (or use the widget's **Settings ⚙ → Copy Apps Script code** button), then **Save**
-4. Click **Deploy → New deployment → Type: Web app**
+2. In the Sheet's **top menu bar**, click **Extensions → Apps Script** — this opens the script editor in a new tab
+3. Replace the default code with the [Apps Script code below](#apps-script-code) (or use the widget's **Settings ⚙ → Copy Apps Script code** button), then **Save** (Ctrl/Cmd + S)
+4. In the top-right of the script editor, click **Deploy → New deployment**. In the dialog that opens:
+   - Click the **⚙ (gear)** next to *Select type* and pick **Web app**
    - **Execute as:** Me
    - **Who has access:** Anyone
    - Click **Deploy**
-5. Authorize the script when prompted (it only touches your own sheet)
-6. Copy the **Web App URL** Google gives you and paste it into the widget's Portfolio Google Sheet field
+5. Authorize the script when prompted (it only touches the sheet it was created in)
+6. Copy the **Web app URL** Google gives you and paste it into the widget's Portfolio Google Sheet field
 7. **Save Settings** — the widget will immediately pull any existing transactions
 
 ### Apps Script code

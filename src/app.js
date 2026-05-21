@@ -523,11 +523,10 @@ function renderSettings() {
             <summary>How to set up (one time)</summary>
             <ol>
               <li>Create a new blank Google Sheet</li>
-              <li>Extensions &rarr; Apps Script</li>
-              <li>Click <em>Copy Apps Script code</em> above and paste it into the editor (replace all)</li>
-              <li>Click <strong>Deploy</strong> &rarr; New deployment &rarr; Type: Web app</li>
-              <li>Execute as: <strong>Me</strong> &middot; Who has access: <strong>Anyone</strong> &rarr; Deploy</li>
-              <li>Copy the Web App URL and paste it above</li>
+              <li>In the Sheet's <strong>top menu bar</strong>, click <strong>Extensions &rarr; Apps Script</strong> &mdash; opens the script editor in a new tab</li>
+              <li>Click <em>Copy Apps Script code</em> above and paste it into the editor (replace all), then Save</li>
+              <li>Top-right of the editor: click <strong>Deploy &rarr; New deployment</strong>. In the dialog, click the &#9881; next to <em>Select type</em> and pick <strong>Web app</strong>. Set <em>Execute as</em>: <strong>Me</strong>, <em>Who has access</em>: <strong>Anyone</strong>, then click <strong>Deploy</strong></li>
+              <li>Authorize when prompted &middot; copy the <strong>Web app URL</strong> &middot; paste it above</li>
             </ol>
           </details>
         </div>
