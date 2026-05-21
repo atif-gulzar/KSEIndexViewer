@@ -131,14 +131,30 @@ function bind(pageEl, settings) {
 
   pageEl.querySelector('#settings-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
+    const oldUrl = (settings.apps_script_url || '').trim();
+    const newUrl = pageEl.querySelector('#apps-script-url').value.trim();
     const next = {
       ...settings,
-      apps_script_url: pageEl.querySelector('#apps-script-url').value.trim(),
+      apps_script_url: newUrl,
       default_page: pageEl.querySelector('#default-page').value,
       refresh_interval_seconds: parseInt(pageEl.querySelector('#refresh-interval').value, 10) || 60,
     };
     saveSettings(next);
-    // Hop back to portfolio so user can verify
-    window.location.hash = '#/portfolio';
+    // Update in-memory snapshot so a subsequent save in the same view sees the new value
+    Object.assign(settings, next);
+
+    // Only auto-jump to Portfolio when the user JUST configured the URL for the first time.
+    // For any subsequent save, stay on Settings with a small "Saved" confirmation.
+    if (!oldUrl && newUrl) {
+      window.location.hash = '#/portfolio';
+      return;
+    }
+    const btn = e.target.querySelector('button[type=submit]');
+    if (btn) {
+      const orig = btn.textContent;
+      btn.textContent = '✓ Saved';
+      btn.disabled = true;
+      setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 1500);
+    }
   });
 }
