@@ -6,8 +6,11 @@ import { getSettings, getCache, setCache } from './store.js';
 
 // ----- PSX (via our /api proxy) -----
 
-async function getJSON(url) {
-  const resp = await fetch(url, { headers: { 'Accept': 'application/json' } });
+async function getJSON(url, force = false) {
+  const resp = await fetch(url, {
+    headers: { 'Accept': 'application/json' },
+    cache: force ? 'reload' : 'default',
+  });
   if (!resp.ok) {
     const text = await resp.text().catch(() => '');
     throw new Error(`${url} → HTTP ${resp.status}: ${text.slice(0, 200)}`);
@@ -30,10 +33,10 @@ export async function fetchIndices() {
   }
 }
 
-export async function fetchMarketWatch() {
+export async function fetchMarketWatch(force = false) {
   const cached = getCache('market');
   try {
-    const data = await getJSON('/api/market-watch');
+    const data = await getJSON('/api/market-watch', force);
     if (data.ok && Array.isArray(data.stocks)) {
       setCache('market', data);
       return data;
@@ -71,10 +74,10 @@ function appsScriptUrl() {
   return url && url.trim() ? url.trim() : null;
 }
 
-export async function fetchTransactions() {
+export async function fetchTransactions(force = false) {
   const url = appsScriptUrl();
   if (!url) throw new Error('Portfolio Google Sheet URL not configured. Open Settings.');
-  const resp = await fetch(url, { method: 'GET' });
+  const resp = await fetch(url, { method: 'GET', cache: force ? 'reload' : 'default' });
   const text = await resp.text();
   let parsed;
   try { parsed = JSON.parse(text); }

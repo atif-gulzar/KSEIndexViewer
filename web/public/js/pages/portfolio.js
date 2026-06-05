@@ -27,7 +27,7 @@ export async function renderPortfolio(pageEl) {
   const refresh = async () => {
     pageEl.innerHTML = '<div class="loading">Loading portfolio…</div>';
     try {
-      await loadPortfolio();
+      await loadPortfolio(true);   // force=true bypasses SW/browser cache
       paint(pageEl);
     } catch (e) {
       pageEl.innerHTML = `<div class="error-state">
@@ -56,10 +56,10 @@ export async function renderPortfolio(pageEl) {
   }
 }
 
-async function loadPortfolio() {
+async function loadPortfolio(force = false) {
   const [txns, marketData] = await Promise.all([
-    fetchTransactions(),
-    fetchMarketWatch().catch(() => ({ stocks: [] })),
+    fetchTransactions(force),
+    fetchMarketWatch(force).catch(() => ({ stocks: [] })),
   ]);
   const quotesBySymbol = new Map((marketData.stocks || []).map(s => [s.symbol, s]));
   const positions = computePositions(txns);
