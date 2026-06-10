@@ -3,16 +3,16 @@ import { escapeHtml, onRefresh } from '../app.js';
 import { formatSigned } from '../format.js';
 
 export async function renderIndices(pageEl) {
-  const refresh = async () => {
+  const refresh = async (force = false) => {
     pageEl.innerHTML = '<div class="loading">Loading…</div>';
     try {
-      const data = await fetchIndices();
+      const data = await fetchIndices(force);
       pageEl.innerHTML = view(data);
     } catch (e) {
       pageEl.innerHTML = `<div class="error-state"><p>Failed to load indices.</p><pre>${escapeHtml(e.message)}</pre></div>`;
     }
   };
-  onRefresh(refresh);
+  onRefresh(() => refresh(true)); // explicit ↻ bypasses SW cache
   await refresh();
 }
 

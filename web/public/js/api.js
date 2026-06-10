@@ -18,10 +18,10 @@ async function getJSON(url, force = false) {
   return await resp.json();
 }
 
-export async function fetchIndices() {
+export async function fetchIndices(force = false) {
   const cached = getCache('indices');
   try {
-    const data = await getJSON('/api/indices');
+    const data = await getJSON('/api/indices', force);
     if (data.ok && Array.isArray(data.indices)) {
       setCache('indices', data);
       return data;
@@ -48,8 +48,8 @@ export async function fetchMarketWatch(force = false) {
   }
 }
 
-export async function fetchStock(symbol) {
-  return await getJSON(`/api/stock/${encodeURIComponent(symbol)}`);
+export async function fetchStock(symbol, force = false) {
+  return await getJSON(`/api/stock/${encodeURIComponent(symbol)}`, force);
 }
 
 export async function fetchSymbols() {

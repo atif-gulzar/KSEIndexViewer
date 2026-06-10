@@ -1,9 +1,10 @@
 // KSE Index Viewer Service Worker
-// - Precache the app shell so PWA opens offline
-// - Stale-while-revalidate for /api/* (background refresh, instant render)
+// - App shell: network-first with cache fallback (deploys reach users on next open, offline still works)
+// - /api/*: stale-while-revalidate, EXCEPT requests sent with cache:'reload'/'no-cache'/'no-store'
+//   (explicit ↻ refresh) which go network-first
 // - Network-only for the user's Apps Script Web App (script.google.com) — never cached
 
-const VERSION = 'v1';
+const VERSION = 'v2';
 const SHELL_CACHE = `kse-shell-${VERSION}`;
 const API_CACHE = `kse-api-${VERSION}`;
 
@@ -54,30 +55,36 @@ self.addEventListener('fetch', (event) => {
     return; // default network handling
   }
 
-  // /api/* — stale-while-revalidate
+  // /api/* — stale-while-revalidate normally; network-first when the page
+  // explicitly asked to bypass caches (fetch cache:'reload' on ↻ refresh).
+  // Cache Storage lookups ignore req.cache, so we must honor it ourselves.
   if (url.pathname.startsWith('/api/')) {
-    event.respondWith(staleWhileRevalidate(req, API_CACHE));
+    const forced = req.cache === 'reload' || req.cache === 'no-cache' || req.cache === 'no-store';
+    event.respondWith(
+      (forced ? networkFirst(req, API_CACHE) : staleWhileRevalidate(req, API_CACHE))
+        .catch(() => offlineJson())
+    );
     return;
   }
 
-  // Shell assets — cache-first
+  // Shell assets — network-first so new deploys take effect on next open;
+  // cached copy keeps the app working offline.
   if (url.origin === self.location.origin) {
-    event.respondWith(cacheFirst(req, SHELL_CACHE));
+    event.respondWith(networkFirst(req, SHELL_CACHE));
   }
 });
 
-async function cacheFirst(req, cacheName) {
-  const cached = await caches.match(req);
-  if (cached) return cached;
+async function networkFirst(req, cacheName) {
+  const cache = await caches.open(cacheName);
   try {
     const fresh = await fetch(req);
-    const cache = await caches.open(cacheName);
-    cache.put(req, fresh.clone());
+    if (fresh && fresh.ok) cache.put(req, fresh.clone());
     return fresh;
   } catch (err) {
-    // For navigation requests, fall back to index.html
+    const cached = await cache.match(req);
+    if (cached) return cached;
     if (req.mode === 'navigate') {
-      const idx = await caches.match('/index.html');
+      const idx = await cache.match('/index.html');
       if (idx) return idx;
     }
     throw err;
@@ -91,7 +98,11 @@ async function staleWhileRevalidate(req, cacheName) {
     if (resp && resp.ok) cache.put(req, resp.clone());
     return resp;
   }).catch(() => null);
-  return cached || (await networkPromise) || new Response(JSON.stringify({ ok: false, error: 'offline' }), {
+  return cached || (await networkPromise) || offlineJson();
+}
+
+function offlineJson() {
+  return new Response(JSON.stringify({ ok: false, error: 'offline' }), {
     status: 503,
     headers: { 'Content-Type': 'application/json' },
   });

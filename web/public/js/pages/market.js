@@ -8,16 +8,16 @@ let sortKey = 'percent_change';
 let sortDesc = true;
 
 export async function renderMarket(pageEl) {
-  const refresh = async () => {
+  const refresh = async (force = false) => {
     pageEl.innerHTML = '<div class="loading">Loading market…</div>';
     try {
-      lastData = await fetchMarketWatch();
+      lastData = await fetchMarketWatch(force);
       paint(pageEl);
     } catch (e) {
       pageEl.innerHTML = `<div class="error-state"><p>Failed to load market.</p><pre>${escapeHtml(e.message)}</pre></div>`;
     }
   };
-  onRefresh(refresh);
+  onRefresh(() => refresh(true)); // explicit ↻ bypasses SW cache
   await refresh();
 }
 

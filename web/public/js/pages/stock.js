@@ -3,10 +3,10 @@ import { escapeHtml, onRefresh } from '../app.js';
 import { formatSigned, formatMoney } from '../format.js';
 
 export async function renderStock(pageEl, { symbol }) {
-  const refresh = async () => {
+  const refresh = async (force = false) => {
     pageEl.innerHTML = `<div class="loading">Loading ${escapeHtml(symbol)}…</div>`;
     try {
-      const data = await fetchStock(symbol);
+      const data = await fetchStock(symbol, force);
       pageEl.innerHTML = view(data);
       renderChart(pageEl, data.intraday || []);
     } catch (e) {
@@ -17,7 +17,7 @@ export async function renderStock(pageEl, { symbol }) {
       </div>`;
     }
   };
-  onRefresh(refresh);
+  onRefresh(() => refresh(true)); // explicit ↻ bypasses SW cache
   await refresh();
 }
 
