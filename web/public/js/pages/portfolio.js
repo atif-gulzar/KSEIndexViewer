@@ -46,12 +46,13 @@ export async function renderPortfolio(pageEl) {
     paint(pageEl);
   }, { label: '+', title: 'Add Transaction' });
 
-  // Render cached immediately if we have it, then refresh in background
+  // Render cached immediately if we have it, then pull live data in the
+  // background (forced — portfolio numbers must never come from a cache).
   const cached = getCache('portfolio-summary');
   if (cached) {
     summary = cached;
     paint(pageEl);
-    loadPortfolio().then(() => paint(pageEl)).catch(e => console.warn('Bg refresh failed:', e));
+    loadPortfolio(true).then(() => paint(pageEl)).catch(e => console.warn('Bg refresh failed:', e));
   } else {
     await refresh();
   }

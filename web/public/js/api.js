@@ -81,8 +81,11 @@ function appsScriptUrl() {
 }
 
 export async function fetchTransactions(force = false) {
-  const url = appsScriptUrl();
+  let url = appsScriptUrl();
   if (!url) throw new Error('Portfolio Google Sheet URL not configured. Open Settings.');
+  // Cache-buster on forced fetches: a unique URL defeats every cache layer
+  // between us and Google. Apps Script ignores unknown query params.
+  if (force) url += (url.includes('?') ? '&' : '?') + '_=' + Date.now();
   const resp = await fetch(url, { method: 'GET', cache: force ? 'reload' : 'default' });
   const text = await resp.text();
   let parsed;

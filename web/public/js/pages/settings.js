@@ -104,6 +104,8 @@ function view(s) {
 
       <button type="submit" class="btn-primary">Save Settings</button>
       <button type="button" id="btn-clear-cache" class="btn-secondary">Clear Cache</button>
+      <button type="button" id="btn-force-update" class="btn-secondary">Force App Update</button>
+      <p class="field-hint">Force App Update wipes the offline cache, removes the service worker, and reloads the latest version from the server. Use it if the app seems stuck on old data or behavior.</p>
 
       <section class="settings-section about">
         <p class="about-text">KSE Index Viewer — Web · <a href="https://github.com/atif-gulzar/KSEIndexViewer" target="_blank" rel="noopener">GitHub</a></p>
@@ -127,6 +129,25 @@ function bind(pageEl, settings) {
   pageEl.querySelector('#btn-clear-cache')?.addEventListener('click', () => {
     ['indices', 'market', 'symbols', 'portfolio-summary', 'portfolio-txns'].forEach(clearCache);
     alert('Cache cleared.');
+  });
+
+  pageEl.querySelector('#btn-force-update')?.addEventListener('click', async (e) => {
+    const btn = e.target;
+    btn.disabled = true;
+    btn.textContent = 'Updating…';
+    try {
+      if ('serviceWorker' in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map(r => r.unregister()));
+      }
+      if (window.caches) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map(k => caches.delete(k)));
+      }
+    } catch (err) {
+      console.warn('Force update cleanup failed:', err);
+    }
+    window.location.reload();
   });
 
   pageEl.querySelector('#settings-form')?.addEventListener('submit', (e) => {
