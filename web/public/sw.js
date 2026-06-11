@@ -59,7 +59,8 @@ self.addEventListener('fetch', (event) => {
   // explicitly asked to bypass caches (fetch cache:'reload' on ↻ refresh).
   // Cache Storage lookups ignore req.cache, so we must honor it ourselves.
   if (url.pathname.startsWith('/api/')) {
-    const forced = req.cache === 'reload' || req.cache === 'no-cache' || req.cache === 'no-store';
+    const forced = req.cache === 'reload' || req.cache === 'no-cache' || req.cache === 'no-store'
+      || req.headers.get('X-Bypass-Cache') === '1';
     event.respondWith(
       (forced ? networkFirst(req, API_CACHE) : staleWhileRevalidate(req, API_CACHE))
         .catch(() => offlineJson())

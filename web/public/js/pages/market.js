@@ -1,6 +1,6 @@
 import { fetchMarketWatch } from '../api.js';
 import { escapeHtml, onRefresh } from '../app.js';
-import { formatSigned, formatMoney } from '../format.js';
+import { formatSigned, formatMoney, formatTime } from '../format.js';
 
 let lastData = null;
 let query = '';
@@ -29,7 +29,7 @@ function paint(pageEl) {
 }
 
 function view(data, visible) {
-  const fetched = data.fetched_at ? new Date(data.fetched_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '';
+  const fetched = formatTime(data.fetched_at);
   const stale = data.stale ? '<span class="stale-pill">cached</span>' : '';
 
   return `

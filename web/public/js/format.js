@@ -20,6 +20,14 @@ export function formatSignedMoney(n) {
   return sign + formatMoney(Math.abs(n));
 }
 
+/** "9:41:07 AM" — seconds included so consecutive refreshes are visibly distinct. */
+export function formatTime(ts) {
+  if (!ts) return '';
+  const d = ts instanceof Date ? ts : new Date(ts);
+  if (isNaN(d.getTime())) return '';
+  return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit' });
+}
+
 export function todayIsoDate() {
   const d = new Date();
   const yyyy = d.getFullYear();

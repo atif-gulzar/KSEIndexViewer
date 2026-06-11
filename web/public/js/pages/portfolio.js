@@ -1,9 +1,10 @@
 import { fetchTransactions, postTransaction, fetchMarketWatch, computePositions, buildPortfolioRows } from '../api.js';
 import { getSettings, getCache, setCache } from '../store.js';
 import { escapeHtml, onRefresh, onPrimaryAction } from '../app.js';
-import { formatSigned, formatMoney, formatSignedMoney, todayIsoDate } from '../format.js';
+import { formatSigned, formatMoney, formatSignedMoney, formatTime, todayIsoDate } from '../format.js';
 
 let summary = null;
+let loadSeq = 0; // guards against an older in-flight load overwriting a newer one
 let showAddForm = false;
 let sortKey = 'symbol';
 let sortDesc = false;
@@ -57,13 +58,17 @@ export async function renderPortfolio(pageEl) {
 }
 
 async function loadPortfolio(force = false) {
+  const seq = ++loadSeq;
   const [txns, marketData] = await Promise.all([
     fetchTransactions(force),
     fetchMarketWatch(force).catch(() => ({ stocks: [] })),
   ]);
+  if (seq !== loadSeq) return; // a newer load finished first — drop this result
   const quotesBySymbol = new Map((marketData.stocks || []).map(s => [s.symbol, s]));
   const positions = computePositions(txns);
   summary = buildPortfolioRows(positions, quotesBySymbol);
+  summary.synced_at = Date.now();
+  summary.market_stale = !!marketData.stale;
   setCache('portfolio-summary', summary);
   setCache('portfolio-txns', txns);
 }
@@ -89,8 +94,13 @@ function view() {
   const totalCls = summary.total_unrealized >= 0 ? 'positive' : 'negative';
   const realizedCls = summary.total_realized >= 0 ? 'positive' : 'negative';
 
+  const syncedAt = summary.synced_at ? formatTime(summary.synced_at) : '';
+  const stalePill = summary.market_stale ? '<span class="stale-pill">market data cached</span>' : '';
+
   return `
     ${showAddForm ? addFormView() : ''}
+
+    <div class="page-meta">${stalePill} ${syncedAt ? `Synced ${syncedAt}` : 'Not synced yet'}</div>
 
     <div class="portfolio-summary">
       <div class="summary-row main">
@@ -245,8 +255,8 @@ function bind(pageEl) {
     try {
       const txn = { date: todayIsoDate(), symbol, side, shares, price };
       await postTransaction(txn);
-      // Reload everything
-      await loadPortfolio();
+      // Reload everything (forced — we just wrote to the sheet)
+      await loadPortfolio(true);
       showAddForm = false;
       paint(pageEl);
     } catch (err) {

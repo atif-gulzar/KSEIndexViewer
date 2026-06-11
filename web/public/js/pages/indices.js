@@ -1,6 +1,6 @@
 import { fetchIndices } from '../api.js';
 import { escapeHtml, onRefresh } from '../app.js';
-import { formatSigned } from '../format.js';
+import { formatSigned, formatTime } from '../format.js';
 
 export async function renderIndices(pageEl) {
   const refresh = async (force = false) => {
@@ -17,7 +17,7 @@ export async function renderIndices(pageEl) {
 }
 
 function view(data) {
-  const fetched = data.fetched_at ? new Date(data.fetched_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '';
+  const fetched = formatTime(data.fetched_at);
   const stale = data.stale ? '<span class="stale-pill">cached</span>' : '';
   return `
     <div class="page-meta">${stale} Updated ${fetched}</div>

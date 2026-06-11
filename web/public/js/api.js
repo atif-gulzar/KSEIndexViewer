@@ -7,8 +7,14 @@ import { getSettings, getCache, setCache } from './store.js';
 // ----- PSX (via our /api proxy) -----
 
 async function getJSON(url, force = false) {
+  // On force: cache:'reload' bypasses the HTTP cache, and the X-Bypass-Cache
+  // header tells our service worker to skip Cache Storage too (some browsers
+  // don't expose request.cache inside the SW). Same-origin only — custom
+  // headers would break the CORS-preflight-less Apps Script requests.
+  const headers = { 'Accept': 'application/json' };
+  if (force) headers['X-Bypass-Cache'] = '1';
   const resp = await fetch(url, {
-    headers: { 'Accept': 'application/json' },
+    headers,
     cache: force ? 'reload' : 'default',
   });
   if (!resp.ok) {
